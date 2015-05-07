@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Kontrol</title>
+
+		<!-- Bootstrap -->
+		<link href="components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+		<style>
+			div {
+				margin-bottom: 10px;
+				margin-left: 10px;
+			}
+			</style>
+	</head>
+	<body>
+
+		<div>
+			<div>
+				<h3>FFT</h3>
+				<canvas class='visualizer'></canvas>
+			</div>
+			<div>
+				<h3>Modes</h3>
+				<a id="fillUp" data-cmd="u" class="btn btn-primary" href="#">Remplissage haut</a>
+				<a id="fillDown" data-cmd="d" class="btn btn-success" href="#">Remplissage bas</a>
+				<a id="expand" data-cmd="e" class="btn btn-primary" href="#">Remplissage centre</a>
+				<a id="flash" data-cmd="f" class="btn btn-primary" href="#">Flash</a>
+				<a id="squares" data-cmd="r" class="btn btn-primary" href="#">Carrés aléatoires</a>
+			</div>
+			<div>
+				<h3>Luminosité</h3>
+				<a id="max" data-cmd="b255" class="btn btn-primary" href="#">Max</a>
+				<a id="mean" data-cmd="b254" class="btn btn-primary" ="#">Moyenne</a>
+				<a id="min" data-cmd="b030" class="btn btn-primary" ="#">Min</a>
+			</div>
+		</div>
+
+		<script src="components/jquery/dist/jquery.min.js"></script>
+		<script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="js/lib/FFTUtils.js"></script>
+		<script src="js/lib/UI.js"></script>
+		<script src="js/index.js"></script>
+	</body>
+</html>
