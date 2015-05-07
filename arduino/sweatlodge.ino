@@ -23,14 +23,17 @@ char currentMode;
 // Ethernet/UDP stuff
 // -----------------------------------------------------------
 // one
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-IPAddress ip(192, 168, 2, 2);
+// byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+// IPAddress ip(192, 168, 2, 2);
 // two
 // byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEF };
 // IPAddress ip(192, 168, 2, 3);
 // three
 //byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xFE };
 //IPAddress ip(192, 168, 2, 4);
+// four
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xFF };
+IPAddress ip(192, 168, 2, 5);
 unsigned int localPort = 8888;
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
 EthernetUDP Udp;
@@ -120,7 +123,7 @@ void handlePacket(char* text) {
 	}
 	// stops the displays
 	else if (text[0] == 's') {
-		dmd.clearScreen(BLACK);
+		if (currentMode != text[0]) reset(text[0]);
 	}
 }
 

@@ -16,7 +16,6 @@ io.on('connection', function (socket) {
 		if (canSend) {
 			canSend = false;
 			var mode = data.mode;
-			console.log(data.mode);
 			var fft = data.fft;
 			var i = 0;
 			for (var ip = first; ip <= last; ip++) {
@@ -24,7 +23,7 @@ io.on('connection', function (socket) {
 				var min = 100;
 				if (height < min) height = min;
 				height = parseInt(map(height, min, 255, 0, 160));
-				//console.log(height);
+				console.log(data.mode, height);
 				i++;
 				send(mode + height, host + ip);
 			}
@@ -40,12 +39,16 @@ io.on('connection', function (socket) {
 	socket.on('brightness', function(cmd) {
 		sendAll(cmd);
 	});
+	socket.on('stop', function() {
+		sendAll('f');
+		sendAll('s');
+	});
 });
 
 // arduinos IP/PORT
 var host = '192.168.2.';
 var first = 2;
-var last = 3;
+var last = 5;
 var port = 8888;
 
 // app receiving messages

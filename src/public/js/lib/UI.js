@@ -2,7 +2,7 @@
 
 	var UI = function(socket) {
 		this.socket = socket;
-		this.modes = ['fillUp', 'fillDown', 'expand', 'flash', 'squares'];
+		this.modes = ['fillUp', 'fillDown', 'expand', 'flash', 'squares', 'tap', 'stop'];
 		var self = this;
 		this.modes.forEach(function(mode) {
 			self.initMode(mode);
@@ -12,8 +12,11 @@
 			self.initBrightness(brightness);
 		});
 		this.currentMode = 'd';
+		this.taps = [];
+		this.tapInterval;
+
 		window.onkeypress = function(evt){
-			console.log(String.fromCharCode(evt.charCode));
+			//console.log(String.fromCharCode(evt.charCode));
 			switch (String.fromCharCode(evt.charCode)) {
 				case 'u':
 				case '4':
@@ -33,6 +36,15 @@
 				case 'r':
 					self.setMode('squares');
 					break;
+				case 's':
+					self.setMode('stop');
+					break;
+				case 't':
+					//self.setMode('tap');
+					self.tapLearning = true;
+					// clear taps
+					self.taps = [];
+					break;
 				case '1':
 					self.setBrightness('max')
 					break;
@@ -41,6 +53,16 @@
 					break;
 				case '3':
 					self.setBrightness('min')
+					break;
+				case ' ':
+					if (self.tapLearning && self.taps.length < 5) {
+						self.taps.push(new Date());
+						if (self.taps.length === 5) {
+							self.tapLearning = false;
+							self.setMode('tap');
+							self.runTapTempo();
+						}
+					}
 					break;
 			}
 		}
@@ -55,6 +77,12 @@
 				if (mode !== id) document.getElementById(mode).className = 'btn btn-primary';
 			});
 			self.currentMode = btn.dataset.cmd;
+			// clear interval if not tap tempo mode
+			if (id !== 'tap' && self.tapInterval) {
+				document.getElementById('currentTapTempo').innerText = '...';
+				clearInterval(self.tapInterval);
+			}
+			if (id === 'stop') self.socket.emit('stop');
 			console.log(self.currentMode);
 		}
 	};
@@ -73,12 +101,16 @@
 
 	UI.prototype.setMode = function(id) {
 		var btn = document.getElementById(id);
-		btn.className = 'btn btn-success';
-		this.modes.forEach(function(mode) {
-			if (mode !== id) document.getElementById(mode).className = 'btn btn-primary';
-		});
-		this.currentMode = btn.dataset.cmd;
-		console.log(self.currentMode);
+		btn.click();
+		// btn.className = 'btn btn-success';
+		// this.modes.forEach(function(mode) {
+		// 	if (mode !== id) document.getElementById(mode).className = 'btn btn-primary';
+		// });
+		// this.currentMode = btn.dataset.cmd;
+		// // clear interval if not tap tempo mode
+		// if (id !== 'tap' && this.tapInterval) clearInterval(this.tapInterval);
+		// if (id === 'stop') self.socket.emit('stop');
+		// console.log(this.currentMode);
 	};
 
 	UI.prototype.setBrightness = function(id) {
@@ -89,6 +121,25 @@
 		});
 		this.socket.emit('brightness', btn.dataset.cmd);
 	};
+
+	UI.prototype.runTapTempo = function() {
+		if (this.tapInterval) clearInterval(this.tapInterval);
+		var prevTap = this.taps[0].getTime();
+		var deltaTap = 0;
+		for (var i = 1; i < this.taps.length; i++) {
+			var currentTap = this.taps[i].getTime();
+			deltaTap += currentTap - prevTap;
+			prevTap = currentTap;
+		};
+		deltaTap = deltaTap / (this.taps.length - 1);
+		var tempo = Math.round(deltaTap);
+		document.getElementById('currentTapTempo').innerText = Math.round(60/(tempo/1000));
+		var self = this;
+		this.tapInterval = setInterval(function() {
+			self.socket.emit('peak', 'f');
+		}, tempo);
+	};
+
 
 	window.SLPUI = UI;
 })();
