@@ -2,12 +2,15 @@ var dgram = require('dgram'),
 	express = require('express'),
 	app = express(),
 	server = require('http').Server(app),
-	io = require('socket.io')(server);
+	io = require('socket.io')(server),
+	open = require('open');
 
 
 var canSend = true;
 
-server.listen(3000);
+server.listen(3000, function () {
+	open('http://localhost:3000');
+});
 app.use(express.static(__dirname + '/public/'));
 
 io.on('connection', function (socket) {

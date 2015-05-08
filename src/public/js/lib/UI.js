@@ -40,7 +40,6 @@
 					self.setMode('stop');
 					break;
 				case 't':
-					//self.setMode('tap');
 					self.tapLearning = true;
 					// clear taps
 					self.taps = [];
@@ -59,7 +58,8 @@
 						self.taps.push(new Date());
 						if (self.taps.length === 5) {
 							self.tapLearning = false;
-							self.setMode('tap');
+							var btn = document.getElementById('tap');
+							self.updateBtn(btn);
 							self.runTapTempo();
 						}
 					}
@@ -72,18 +72,18 @@
 		var btn = document.getElementById(id);
 		var self = this;
 		btn.onclick = function() {
-			btn.className = 'btn btn-success';
-			self.modes.forEach(function(mode) {
-				if (mode !== id) document.getElementById(mode).className = 'btn btn-primary';
-			});
-			self.currentMode = btn.dataset.cmd;
-			// clear interval if not tap tempo mode
-			if (id !== 'tap' && self.tapInterval) {
+			if (id !== 'tap') {
+				self.updateBtn(btn);
 				document.getElementById('currentTapTempo').innerText = '...';
-				clearInterval(self.tapInterval);
+				// clear interval if not tap tempo mode
+				if (self.tapInterval) clearInterval(self.tapInterval);
+				if (id === 'stop') self.socket.emit('stop');
 			}
-			if (id === 'stop') self.socket.emit('stop');
-			console.log(self.currentMode);
+			else {
+				self.tapLearning = true;
+				// clear taps
+				self.taps = [];
+			}
 		}
 	};
 
@@ -99,18 +99,18 @@
 		}
 	};
 
+	UI.prototype.updateBtn = function(btn) {
+		btn.className = 'btn btn-success';
+		this.modes.forEach(function(mode) {
+			if (mode !== btn.id) document.getElementById(mode).className = 'btn btn-primary';
+		});
+		this.currentMode = btn.dataset.cmd;
+		console.log(this.currentMode);
+	};
+
 	UI.prototype.setMode = function(id) {
 		var btn = document.getElementById(id);
 		btn.click();
-		// btn.className = 'btn btn-success';
-		// this.modes.forEach(function(mode) {
-		// 	if (mode !== id) document.getElementById(mode).className = 'btn btn-primary';
-		// });
-		// this.currentMode = btn.dataset.cmd;
-		// // clear interval if not tap tempo mode
-		// if (id !== 'tap' && this.tapInterval) clearInterval(this.tapInterval);
-		// if (id === 'stop') self.socket.emit('stop');
-		// console.log(this.currentMode);
 	};
 
 	UI.prototype.setBrightness = function(id) {

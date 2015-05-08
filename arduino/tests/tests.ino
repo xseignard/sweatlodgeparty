@@ -2,6 +2,7 @@
 #include <SPI.h>
 #include <DMD.h>
 #include <TimerOne.h>
+#include <Arial_Black_16.h>
 
 // -----------------------------------------------------------
 // DMD stuff
@@ -33,6 +34,7 @@ void setup() {
 	Timer1.attachInterrupt(ScanDMD);
 	// turn off all pixels
 	//flash(2);
+	dmd.selectFont(Arial_Black_16);
 }
 
 void loop() {
@@ -41,19 +43,25 @@ void loop() {
 	// 	randomSquares(random(50, 100), 1, 7, 0);
 	// 	timeElapsed = 0;
 	// }
-	expand(0, 1000);
-	delay(1000);
-	expand(80, 1000);
-	delay(1000);
-	expand(160, 1000);
-	delay(1000);
-	expand(10, 1000);
-	delay(30000);
+	drawText("eat");
+	delay(500);
+	drawText("rave");
+	delay(500);
+	drawText("sleep");
+	delay(500);
+	drawText("repeat");
+	delay(500);
 }
 
 // -----------------------------------------------------------
 // DMD effects
 // -----------------------------------------------------------
+void drawText(char* text) {
+	int width = strlen(text);
+	int offSet = (32*DISPLAYS_ACROSS - width) / 2;
+	dmd.drawString(offSet, 2, text, width, BLACK, RED);
+}
+
 void fill(int height, boolean up, int microDelay) {
 	if (height > currentHeight) {
 		for(int i=currentHeight; i<=height; i++){
