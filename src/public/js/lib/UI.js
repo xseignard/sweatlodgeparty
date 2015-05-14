@@ -2,7 +2,7 @@
 
 	var UI = function(socket) {
 		this.socket = socket;
-		this.modes = ['fillUp', 'fillDown', 'expand', 'flash', 'squares', 'tap', 'stop'];
+		this.modes = ['fillUp', 'fillDown', 'expand', 'flash', 'squares', 'tap', 'stop', 'stopSquares'];
 		var self = this;
 		this.modes.forEach(function(mode) {
 			self.initMode(mode);
@@ -16,14 +16,14 @@
 		this.tapInterval;
 
 		window.onkeypress = function(evt){
-			//console.log(String.fromCharCode(evt.charCode));
+			console.log(String.fromCharCode(evt.charCode));
 			switch (String.fromCharCode(evt.charCode)) {
 				case 'u':
-				case '4':
+				case '6':
 					self.setMode('fillUp');
 					break;
 				case 'd':
-				case '6':
+				case '4':
 					self.setMode('fillDown');
 					break;
 				case 'e':
@@ -31,13 +31,19 @@
 					self.setMode('expand');
 					break;
 				case 'f':
+				case '7':
 					self.setMode('flash');
 					break;
 				case 'r':
+				case '8':
 					self.setMode('squares');
 					break;
 				case 's':
+				case '9':
 					self.setMode('stop');
+					break;
+				case 'c':
+					self.setMode('stopSquares');
 					break;
 				case 't':
 					self.tapLearning = true;
@@ -77,7 +83,8 @@
 				document.getElementById('currentTapTempo').innerText = '...';
 				// clear interval if not tap tempo mode
 				if (self.tapInterval) clearInterval(self.tapInterval);
-				if (id === 'stop') self.socket.emit('stop');
+				if (id === 'stop') self.socket.emit('stop', true);
+				if (id === 'stopSquares') self.socket.emit('stop', false);
 			}
 			else {
 				self.tapLearning = true;

@@ -42,8 +42,13 @@ io.on('connection', function (socket) {
 	socket.on('brightness', function(cmd) {
 		sendAll(cmd);
 	});
-	socket.on('stop', function() {
-		sendAll('f');
+	socket.on('stop', function(flag) {
+		if (flag) {
+			sendAll('f');
+		}
+		else {
+			sendAll('r');
+		}
 		sendAll('s');
 	});
 });
