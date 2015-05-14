@@ -1,11 +1,10 @@
 ## Configurer l'ip de la machine
 
-```
-192.168.2.6
-255.255.255.0
-```
+- IP: `192.168.2.6`
+- Masque de sous réseau : `255.255.255.0`
 
 ## Installer/lancer
+Installer git & node.js puis:
 
 ```
 git clone git@github.com:xseignard/sweatlodgeparty.git
